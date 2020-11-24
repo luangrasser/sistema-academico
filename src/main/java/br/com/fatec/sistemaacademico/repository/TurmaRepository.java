@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface TurmaRepository extends JpaRepository<Turma, Integer> {
 
     Optional<List<Turma>> findAllByDescricao(String descricao);
+
+    Optional<Turma> findByDescricao(String turma);
 }

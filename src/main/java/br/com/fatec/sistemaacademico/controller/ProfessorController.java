@@ -1,5 +1,6 @@
 package br.com.fatec.sistemaacademico.controller;
 
+import br.com.fatec.sistemaacademico.controller.dto.ProfessorDTO;
 import br.com.fatec.sistemaacademico.model.Professor;
 import br.com.fatec.sistemaacademico.service.ProfessorService;
 import lombok.extern.log4j.Log4j2;
@@ -19,9 +20,9 @@ public class ProfessorController {
     private ProfessorService professorService;
 
     @PostMapping("/salvar")
-    public ResponseEntity<?> salvar(@RequestBody Professor professor, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<?> salvar(@RequestBody ProfessorDTO professorDTO, UriComponentsBuilder uriBuilder) {
         try {
-            professor = professorService.salvar(professor);
+            Professor professor = professorService.salvar(professorDTO);
             URI uri = uriBuilder.path("/professors/{id}").buildAndExpand(professor.getId()).toUri();
             return ResponseEntity.created(uri).body(professor);
         } catch (Exception e) {
@@ -41,9 +42,9 @@ public class ProfessorController {
     }
 
     @PutMapping("/atualizar/{id}")
-    public ResponseEntity<?> atualizar(@RequestBody Professor professor) {
+    public ResponseEntity<?> atualizar(@RequestBody ProfessorDTO professorDTO) {
         try {
-            return ResponseEntity.ok(professorService.atualizar(professor));
+            return ResponseEntity.ok(professorService.atualizar(professorDTO));
         } catch (Exception e) {
             log.error("Falha ao atualizar professor.", e);
             return ResponseEntity.badRequest().build();

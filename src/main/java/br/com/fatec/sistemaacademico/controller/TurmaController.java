@@ -1,5 +1,6 @@
 package br.com.fatec.sistemaacademico.controller;
 
+import br.com.fatec.sistemaacademico.controller.dto.TurmaDTO;
 import br.com.fatec.sistemaacademico.model.Turma;
 import br.com.fatec.sistemaacademico.service.TurmaService;
 import lombok.extern.log4j.Log4j2;
@@ -19,9 +20,9 @@ public class TurmaController {
     private TurmaService turmaService;
 
     @PostMapping("/salvar")
-    public ResponseEntity<?> salvar(@RequestBody Turma turma, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<?> salvar(@RequestBody TurmaDTO turmaDTO, UriComponentsBuilder uriBuilder) {
         try {
-            turma = turmaService.salvar(turma);
+            Turma turma = turmaService.salvar(turmaDTO);
             URI uri = uriBuilder.path("/turmas/{id}").buildAndExpand(turma.getId()).toUri();
             return ResponseEntity.created(uri).body(turma);
         } catch (Exception e) {
@@ -41,9 +42,9 @@ public class TurmaController {
     }
 
     @PutMapping("/atualizar/{id}")
-    public ResponseEntity<?> atualizar(@RequestBody Turma turma) {
+    public ResponseEntity<?> atualizar(@RequestBody TurmaDTO turmaDTO) {
         try {
-            return ResponseEntity.ok(turmaService.atualizar(turma));
+            return ResponseEntity.ok(turmaService.atualizar(turmaDTO));
         } catch (Exception e) {
             log.error("Falha ao atualizar turma.", e);
             return ResponseEntity.badRequest().build();

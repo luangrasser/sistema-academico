@@ -1,5 +1,6 @@
 package br.com.fatec.sistemaacademico.controller;
 
+import br.com.fatec.sistemaacademico.controller.dto.DisciplinaDTO;
 import br.com.fatec.sistemaacademico.model.Disciplina;
 import br.com.fatec.sistemaacademico.service.DisciplinaService;
 import lombok.extern.log4j.Log4j2;
@@ -19,9 +20,9 @@ public class DisciplinaController {
     private DisciplinaService disciplinaService;
 
     @PostMapping("/salvar")
-    public ResponseEntity<?> salvar(@RequestBody Disciplina disciplina, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<?> salvar(@RequestBody DisciplinaDTO disciplinaDTO, UriComponentsBuilder uriBuilder) {
         try {
-            disciplina = disciplinaService.salvar(disciplina);
+            Disciplina disciplina = disciplinaService.salvar(disciplinaDTO);
             URI uri = uriBuilder.path("/disciplinas/{id}").buildAndExpand(disciplina.getId()).toUri();
             return ResponseEntity.created(uri).body(disciplina);
         } catch (Exception e) {
@@ -41,9 +42,9 @@ public class DisciplinaController {
     }
 
     @PutMapping("/atualizar/{id}")
-    public ResponseEntity<?> atualizar(@RequestBody Disciplina disciplina) {
+    public ResponseEntity<?> atualizar(@RequestBody DisciplinaDTO disciplinaDTO) {
         try {
-            return ResponseEntity.ok(disciplinaService.atualizar(disciplina));
+            return ResponseEntity.ok(disciplinaService.atualizar(disciplinaDTO));
         } catch (Exception e) {
             log.error("Falha ao atualizar disciplina.", e);
             return ResponseEntity.badRequest().build();

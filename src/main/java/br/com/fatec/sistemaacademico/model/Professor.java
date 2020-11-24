@@ -9,6 +9,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -21,6 +22,6 @@ public class Professor extends AbstractEntidade {
     private String nome;
     private String titulacao;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "professor")
-    private List<ProfessorTurma> turmas;
+    private List<ProfessorTurma> turmas = new ArrayList<>();
 
 }
