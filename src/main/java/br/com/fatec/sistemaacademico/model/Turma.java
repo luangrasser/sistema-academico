@@ -19,6 +19,8 @@ public class Turma extends AbstractEntidade {
     private List<Aluno> alunos;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "turma")
     private List<DisciplinaTurma> professores;
+    @Transient
+    private String nomeCurso;
 
 }
 

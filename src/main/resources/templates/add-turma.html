@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="ie=edge" http-equiv="x-ua-compatible">
+    <title>Cadastrar Turma</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" rel="stylesheet">
+    <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" rel="stylesheet">
+    <link href="../css/shards.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container my-5">
+    <h2 class="mb-5">Cadastrar Turma</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <form action="#" method="post" th:action="@{/turmas/salvar}" th:object="${turma}">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label class="col-form-label" for="descricao">Descrição</label>
+                        <input class="form-control" id="descricao" placeholder="Descrição" th:field="*{descricao}" type="text">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="col-form-label" for="nomeCurso">Curso</label>
+                        <input class="form-control" id="nomeCurso" placeholder="Curso" th:field="*{nomeCurso}" type="text">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mt-5">
+                        <input class="btn btn-primary" type="submit" value="Salvar Turma">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

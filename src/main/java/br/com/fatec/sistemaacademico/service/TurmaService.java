@@ -1,6 +1,5 @@
 package br.com.fatec.sistemaacademico.service;
 
-import br.com.fatec.sistemaacademico.controller.dto.TurmaDTO;
 import br.com.fatec.sistemaacademico.model.Curso;
 import br.com.fatec.sistemaacademico.model.Turma;
 import br.com.fatec.sistemaacademico.repository.CursoRepository;
@@ -17,23 +16,23 @@ import java.util.List;
 @Transactional
 public class TurmaService {
 
-    @Autowired
-    private TurmaRepository turmaRepository;
-    @Autowired
-    private CursoRepository cursoRepository;
+    private final TurmaRepository turmaRepository;
+    private final CursoRepository cursoRepository;
 
+    @Autowired
+    public TurmaService(TurmaRepository turmaRepository, CursoRepository cursoRepository) {
+        this.turmaRepository = turmaRepository;
+        this.cursoRepository = cursoRepository;
+    }
 
-    public Turma salvar(TurmaDTO turmaDTO) throws Exception {
-        Turma turma = turmaDTO.convert();
-        turma = atualizarCurso(turma, turmaDTO);
+    public Turma salvar(Turma turma) throws Exception {
+        turma = atualizarCurso(turma);
         return turmaRepository.save(turma);
     }
 
 
-    public Turma atualizar(TurmaDTO turmaDTO) throws Exception {
-        Turma turma = turmaRepository.findById(turmaDTO.getId())
-                .orElseThrow(() -> new Exception("Falha ao atualizar, turma não encontrada"));
-        turma = atualizarCurso(turma, turmaDTO);
+    public Turma atualizar(Turma turma) throws Exception {
+        turma = atualizarCurso(turma);
         return turmaRepository.save(turma);
     }
 
@@ -50,12 +49,16 @@ public class TurmaService {
         return turmas;
     }
 
-    private Turma atualizarCurso(Turma turma, TurmaDTO dto) throws Exception {
-        if (!StringUtils.isEmpty(dto.getNomeCurso())) {
-            Curso curso = cursoRepository.findByNome(dto.getNomeCurso())
+    private Turma atualizarCurso(Turma turma) throws Exception {
+        if (!StringUtils.isEmpty(turma.getNomeCurso())) {
+            Curso curso = cursoRepository.findByNome(turma.getNomeCurso())
                     .orElseThrow(() -> new Exception("Falha ao salvar turma, curso não encontrado"));
             turma.setCurso(curso);
         }
         return turma;
+    }
+
+    public List<Turma> findAll() {
+        return turmaRepository.findAll();
     }
 }
