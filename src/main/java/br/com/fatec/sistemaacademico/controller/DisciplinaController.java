@@ -1,33 +1,45 @@
 package br.com.fatec.sistemaacademico.controller;
 
-import br.com.fatec.sistemaacademico.controller.dto.DisciplinaDTO;
 import br.com.fatec.sistemaacademico.model.Disciplina;
 import br.com.fatec.sistemaacademico.service.DisciplinaService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.net.URI;
 
 @Log4j2
-@RestController
+@Controller
 @RequestMapping("/disciplinas")
 public class DisciplinaController {
 
+    private final DisciplinaService disciplinaService;
+
     @Autowired
-    private DisciplinaService disciplinaService;
+    public DisciplinaController(DisciplinaService disciplinaService) {
+        this.disciplinaService = disciplinaService;
+    }
+
+    @GetMapping("/add-disciplina")
+    public String mostraFormularioCadastro(Disciplina disciplina) {
+        return "add-disciplina";
+    }
+
+    @GetMapping("/list-disciplina")
+    public String mostraListaAlunos(Model model) {
+        model.addAttribute("disciplinas", disciplinaService.findAll());
+        return "list-disciplina";
+    }
 
     @PostMapping("/salvar")
-    public ResponseEntity<?> salvar(@RequestBody DisciplinaDTO disciplinaDTO, UriComponentsBuilder uriBuilder) {
+    public String salvar(Disciplina disciplina) {
         try {
-            Disciplina disciplina = disciplinaService.salvar(disciplinaDTO);
-            URI uri = uriBuilder.path("/disciplinas/{id}").buildAndExpand(disciplina.getId()).toUri();
-            return ResponseEntity.created(uri).body(disciplina);
+            disciplinaService.salvar(disciplina);
+            return "redirect:/disciplinas/list-disciplina";
         } catch (Exception e) {
             log.error("Falha ao salvar disciplina.", e);
-            return ResponseEntity.badRequest().build();
+            return "Falha ao salvar disciplina.";
         }
     }
 
@@ -42,9 +54,9 @@ public class DisciplinaController {
     }
 
     @PutMapping("/atualizar/{id}")
-    public ResponseEntity<?> atualizar(@RequestBody DisciplinaDTO disciplinaDTO) {
+    public ResponseEntity<?> atualizar(@RequestBody Disciplina disciplina) {
         try {
-            return ResponseEntity.ok(disciplinaService.atualizar(disciplinaDTO));
+            return ResponseEntity.ok(disciplinaService.atualizar(disciplina));
         } catch (Exception e) {
             log.error("Falha ao atualizar disciplina.", e);
             return ResponseEntity.badRequest().build();
