@@ -5,29 +5,37 @@ import br.com.fatec.sistemaacademico.service.CursoService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.net.URI;
 
 @Log4j2
-@RestController
+@Controller
 @RequestMapping("/cursos")
 public class CursoController {
 
-    @Autowired
-    private CursoService cursoService;
+    private final CursoService cursoService;
 
-    @PostMapping("/salvar")
-    public ResponseEntity<?> salvar(@RequestBody Curso curso, UriComponentsBuilder uriBuilder) {
-        try {
-            curso = cursoService.salvar(curso);
-            URI uri = uriBuilder.path("/cursos/{id}").buildAndExpand(curso.getId()).toUri();
-            return ResponseEntity.created(uri).body(curso);
-        } catch (Exception e) {
-            log.error("Falha ao salvar curso.", e);
-            return ResponseEntity.badRequest().build();
-        }
+    @Autowired
+    public CursoController(CursoService cursoService) {
+        this.cursoService = cursoService;
+    }
+
+    @GetMapping("/add-curso")
+    public String mostraFormularioCadastro(Curso curso) {
+        return "add-curso";
+    }
+
+    @GetMapping("/list-curso")
+    public String mostraListaCursos(Model model) {
+        model.addAttribute("cursos", cursoService.findAll());
+        return "list-curso";
+    }
+
+    @PostMapping(value = "/salvar")
+    public String salvar(Curso curso) {
+        cursoService.salvar(curso);
+        return "redirect:/cursos/list-curso";
     }
 
     @GetMapping("/pesquisar")

@@ -15,8 +15,13 @@ import java.util.Optional;
 @Transactional
 public class CursoService {
 
+
+    private final CursoRepository cursoRepository;
+
     @Autowired
-    private CursoRepository cursoRepository;
+    public CursoService(CursoRepository cursoRepository) {
+        this.cursoRepository = cursoRepository;
+    }
 
 
     public Curso salvar(Curso curso) {
@@ -46,6 +51,10 @@ public class CursoService {
             cursos.sort(Comparator.comparing(Curso::getNome));
         }
         return cursos;
+    }
+
+    public List<Curso> findAll() {
+        return cursoRepository.findAll();
     }
 
 }
