@@ -1,6 +1,5 @@
 package br.com.fatec.sistemaacademico.service;
 
-import br.com.fatec.sistemaacademico.controller.dto.AlunoDTO;
 import br.com.fatec.sistemaacademico.model.Aluno;
 import br.com.fatec.sistemaacademico.model.Turma;
 import br.com.fatec.sistemaacademico.repository.AlunoRepository;
@@ -18,22 +17,23 @@ import java.util.Optional;
 @Transactional
 public class AlunoService {
 
+    private final AlunoRepository alunoRepository;
+    private final TurmaRepository turmaRepository;
+
     @Autowired
-    private AlunoRepository alunoRepository;
-    @Autowired
-    private TurmaRepository turmaRepository;
+    public AlunoService(AlunoRepository alunoRepository, TurmaRepository turmaRepository) {
+        this.alunoRepository = alunoRepository;
+        this.turmaRepository = turmaRepository;
+    }
 
 
-    public Aluno salvar(AlunoDTO alunoDTO) throws Exception {
-        Aluno aluno = alunoDTO.convert();
-        aluno = atualizarTurma(aluno, alunoDTO);
+    public Aluno salvar(Aluno aluno) throws Exception {
+        aluno = atualizarTurma(aluno);
         return alunoRepository.save(aluno);
     }
 
-    public Aluno atualizar(AlunoDTO alunoDTO) throws Exception {
-        Aluno aluno = alunoRepository.findById(alunoDTO.getId())
-                .orElseThrow(() -> new Exception("Falha ao atualizar, aluno não encontrado"));
-        aluno = atualizarTurma(aluno, alunoDTO);
+    public Aluno atualizar(Aluno aluno) throws Exception {
+        aluno = atualizarTurma(aluno);
         return alunoRepository.save(aluno);
     }
 
@@ -50,12 +50,16 @@ public class AlunoService {
         return alunos;
     }
 
-    private Aluno atualizarTurma(Aluno aluno, AlunoDTO dto) throws Exception {
-        if (!StringUtils.isEmpty(dto.getDescricaoTurma())) {
-            Turma turma = turmaRepository.findByDescricao(dto.getDescricaoTurma())
+    private Aluno atualizarTurma(Aluno aluno) throws Exception {
+        if (!StringUtils.isEmpty(aluno.getDescricaoTurma())) {
+            Turma turma = turmaRepository.findByDescricao(aluno.getDescricaoTurma())
                     .orElseThrow(() -> new Exception("Falha ao vincular turma ao professor, turma não encontrada"));
             aluno.setTurma(turma);
         }
         return aluno;
+    }
+
+    public List<Aluno> findAll() {
+        return alunoRepository.findAll();
     }
 }

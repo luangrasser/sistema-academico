@@ -1,33 +1,45 @@
 package br.com.fatec.sistemaacademico.controller;
 
-import br.com.fatec.sistemaacademico.controller.dto.AlunoDTO;
 import br.com.fatec.sistemaacademico.model.Aluno;
 import br.com.fatec.sistemaacademico.service.AlunoService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.net.URI;
 
 @Log4j2
-@RestController
+@Controller
 @RequestMapping("/alunos")
 public class AlunoController {
 
+    private final AlunoService alunoService;
+
     @Autowired
-    private AlunoService alunoService;
+    public AlunoController(AlunoService alunoService) {
+        this.alunoService = alunoService;
+    }
+
+    @GetMapping("/add-aluno")
+    public String mostraFormularioCadastro(Aluno aluno) {
+        return "add-aluno";
+    }
+
+    @GetMapping("/list-aluno")
+    public String mostraListaAlunos(Model model) {
+        model.addAttribute("alunos", alunoService.findAll());
+        return "list-aluno";
+    }
 
     @PostMapping("/salvar")
-    public ResponseEntity<?> salvar(@RequestBody AlunoDTO alunoDTO, UriComponentsBuilder uriBuilder) {
+    public String salvar(Aluno aluno) {
         try {
-            Aluno aluno = alunoService.salvar(alunoDTO);
-            URI uri = uriBuilder.path("/alunos/{id}").buildAndExpand(aluno.getId()).toUri();
-            return ResponseEntity.created(uri).body(aluno);
+            alunoService.salvar(aluno);
+            return "redirect:/alunos/list-aluno";
         } catch (Exception e) {
             log.error("Falha ao salvar aluno.", e);
-            return ResponseEntity.badRequest().build();
+            return "Falha ao salvar aluno";
         }
     }
 
@@ -42,9 +54,9 @@ public class AlunoController {
     }
 
     @PutMapping("/atualizar/{id}")
-    public ResponseEntity<?> atualizar(@RequestBody AlunoDTO alunoDTO) {
+    public ResponseEntity<?> atualizar(Aluno aluno) {
         try {
-            return ResponseEntity.ok(alunoService.atualizar(alunoDTO));
+            return ResponseEntity.ok(alunoService.atualizar(aluno));
         } catch (Exception e) {
             log.error("Falha ao atualizar aluno.", e);
             return ResponseEntity.badRequest().build();
