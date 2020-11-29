@@ -1,33 +1,45 @@
 package br.com.fatec.sistemaacademico.controller;
 
-import br.com.fatec.sistemaacademico.controller.dto.ProfessorDTO;
 import br.com.fatec.sistemaacademico.model.Professor;
 import br.com.fatec.sistemaacademico.service.ProfessorService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.net.URI;
 
 @Log4j2
-@RestController
+@Controller
 @RequestMapping("/professores")
 public class ProfessorController {
 
+    private final ProfessorService professorService;
+
     @Autowired
-    private ProfessorService professorService;
+    public ProfessorController(ProfessorService professorService) {
+        this.professorService = professorService;
+    }
+
+    @GetMapping("/add-professor")
+    public String mostraFormularioCadastro(Professor professor) {
+        return "add-professor";
+    }
+
+    @GetMapping("/list-professor")
+    public String mostraListaAlunos(Model model) {
+        model.addAttribute("professores", professorService.findAll());
+        return "list-professor";
+    }
 
     @PostMapping("/salvar")
-    public ResponseEntity<?> salvar(@RequestBody ProfessorDTO professorDTO, UriComponentsBuilder uriBuilder) {
+    public String salvar(Professor professor) {
         try {
-            Professor professor = professorService.salvar(professorDTO);
-            URI uri = uriBuilder.path("/professors/{id}").buildAndExpand(professor.getId()).toUri();
-            return ResponseEntity.created(uri).body(professor);
+            professorService.salvar(professor);
+            return "redirect:/professores/list-professor";
         } catch (Exception e) {
             log.error("Falha ao salvar professor.", e);
-            return ResponseEntity.badRequest().build();
+            return "Falha ao salvar professor.";
         }
     }
 
@@ -42,9 +54,9 @@ public class ProfessorController {
     }
 
     @PutMapping("/atualizar/{id}")
-    public ResponseEntity<?> atualizar(@RequestBody ProfessorDTO professorDTO) {
+    public ResponseEntity<?> atualizar(Professor professor, @PathVariable Integer id) {
         try {
-            return ResponseEntity.ok(professorService.atualizar(professorDTO));
+            return ResponseEntity.ok(professorService.atualizar(professor));
         } catch (Exception e) {
             log.error("Falha ao atualizar professor.", e);
             return ResponseEntity.badRequest().build();

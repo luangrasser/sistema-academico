@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="ie=edge" http-equiv="x-ua-compatible">
+    <title>Cadastrar Professor</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" rel="stylesheet">
+    <link crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" rel="stylesheet">
+    <link href="../css/shards.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container my-5">
+    <h2 class="mb-5">Cadastrar Professor</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <form action="#" method="post" th:action="@{/professores/salvar}" th:object="${professor}">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label class="col-form-label" for="nome">Nome</label>
+                        <input class="form-control" id="nome" placeholder="Nome" th:field="*{nome}" type="text">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="col-form-label" for="titulacao">Titulação</label>
+                        <input class="form-control" id="titulacao" placeholder="Titulação" th:field="*{titulacao}" type="text">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mt-5">
+                        <input class="btn btn-primary" type="submit" value="Salvar Professor">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

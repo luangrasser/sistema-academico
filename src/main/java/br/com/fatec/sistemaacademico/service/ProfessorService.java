@@ -1,6 +1,5 @@
 package br.com.fatec.sistemaacademico.service;
 
-import br.com.fatec.sistemaacademico.controller.dto.ProfessorDTO;
 import br.com.fatec.sistemaacademico.model.Professor;
 import br.com.fatec.sistemaacademico.model.ProfessorTurma;
 import br.com.fatec.sistemaacademico.model.Turma;
@@ -10,6 +9,7 @@ import br.com.fatec.sistemaacademico.repository.TurmaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.Comparator;
 import java.util.List;
@@ -19,25 +19,26 @@ import java.util.Optional;
 @Transactional
 public class ProfessorService {
 
+    private final ProfessorRepository professorRepository;
+    private final TurmaRepository turmaRepository;
+    private final ProfessorTurmaRepository professorTurmaRepository;
+
     @Autowired
-    private ProfessorRepository professorRepository;
-    @Autowired
-    private TurmaRepository turmaRepository;
-    @Autowired
-    private ProfessorTurmaRepository professorTurmaRepository;
+    public ProfessorService(ProfessorRepository professorRepository, TurmaRepository turmaRepository, ProfessorTurmaRepository professorTurmaRepository) {
+        this.professorRepository = professorRepository;
+        this.turmaRepository = turmaRepository;
+        this.professorTurmaRepository = professorTurmaRepository;
+    }
 
 
-    public Professor salvar(ProfessorDTO professorDTO) throws Exception {
-        Professor professor = professorDTO.convert();
+    public Professor salvar(Professor professor) throws Exception {
         professor = professorRepository.save(professor);
-        atualizarTurmas(professor, professorDTO);
+        atualizarTurmas(professor);
         return professor;
     }
 
-    public Professor atualizar(ProfessorDTO professorDTO) throws Exception {
-        Professor professor = professorRepository.findById(professorDTO.getId())
-                .orElseThrow(() -> new Exception("Falha ao atualizar, professor não encontrado"));
-        atualizarTurmas(professor, professorDTO);
+    public Professor atualizar(Professor professor) throws Exception {
+        atualizarTurmas(professor);
         return professorRepository.save(professor);
     }
 
@@ -54,15 +55,17 @@ public class ProfessorService {
         return professor;
     }
 
-    private void atualizarTurmas(Professor professor, ProfessorDTO dto) throws Exception {
-        if (dto.getTurmas() != null && !dto.getTurmas().isEmpty()) {
-            for (String descricaoTurma : dto.getTurmas()) {
-                Turma turma = turmaRepository.findByDescricao(descricaoTurma)
-                        .orElseThrow(() -> new Exception("Falha ao vincular turma ao professor, turma não encontrada"));
-                ProfessorTurma professorTurma = new ProfessorTurma(professor, turma);
-                professorTurmaRepository.save(professorTurma);
-            }
+    private void atualizarTurmas(Professor professor) throws Exception {
+        if (!StringUtils.isEmpty(professor.getDescricaoTurma())) {
+            Turma turma = turmaRepository.findByDescricao(professor.getDescricaoTurma())
+                    .orElseThrow(() -> new Exception("Falha ao vincular turma ao professor, turma não encontrada"));
+            ProfessorTurma professorTurma = new ProfessorTurma(professor, turma);
+            professorTurmaRepository.save(professorTurma);
         }
+    }
+
+    public List<Professor> findAll() {
+        return professorRepository.findAll();
     }
 
 }
