@@ -66,5 +66,8 @@ public class DisciplinaService {
     public List<Disciplina> findAll() {
         return disciplinaRepository.findAll();
     }
-    
+
+    public Disciplina findById(Integer id) {
+        return disciplinaRepository.findById(id).orElse(null);
+    }
 }

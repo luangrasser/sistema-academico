@@ -26,6 +26,13 @@ public class DisciplinaController {
         return "add-disciplina";
     }
 
+    @GetMapping("/editar/{id}")
+    public String mostraFormularioEdicao(@PathVariable("id") Integer id, Model model) {
+        Disciplina disciplina = disciplinaService.findById(id);
+        model.addAttribute("disciplina", disciplina);
+        return "update-disciplina";
+    }
+
     @GetMapping("/list-disciplina")
     public String mostraListaAlunos(Model model) {
         model.addAttribute("disciplinas", disciplinaService.findAll());
@@ -53,24 +60,26 @@ public class DisciplinaController {
         }
     }
 
-    @PutMapping("/atualizar/{id}")
-    public ResponseEntity<?> atualizar(@RequestBody Disciplina disciplina) {
+    @PostMapping("/atualizar/{id}")
+    public String atualizar(Disciplina disciplina, @PathVariable("id") Integer id) {
         try {
-            return ResponseEntity.ok(disciplinaService.atualizar(disciplina));
-        } catch (Exception e) {
-            log.error("Falha ao atualizar disciplina.", e);
-            return ResponseEntity.badRequest().build();
+            disciplina.setId(id);
+            disciplinaService.salvar(disciplina);
+            return "redirect:/disciplinas/list-disciplina";
+        } catch(Exception e) {
+            log.error("Falha ao salvar curso.", e);
+            return "Falha ao salvar curso.";
         }
     }
 
-    @PutMapping("/excluir/{id}")
-    public ResponseEntity<?> excluir(@PathVariable Integer id) {
+    @GetMapping("/excluir/{id}")
+    public String excluir(@PathVariable Integer id) {
         try {
             disciplinaService.excluir(id);
-            return ResponseEntity.ok().build();
+            return "redirect:/disciplinas/list-disciplina";
         } catch (Exception e) {
             log.error("Falha ao excluir disciplina.", e);
-            return ResponseEntity.badRequest().build();
+            return "Falha ao excluir disciplina";
         }
     }
     

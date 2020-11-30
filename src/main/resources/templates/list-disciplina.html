@@ -31,7 +31,7 @@
                         <td th:text="${disciplina.nome}"></td>
                         <td th:text="${disciplina.cargaHoraria}"></td>
                         <td th:text="${disciplina.ementa}"></td>
-                        <td><a th:href="@{/disciplinas/atualizar/{id}(id=${disciplina.id})}" class="btn btn-primary"><i class="fas fa-user-edit ml-2"></i></a></td>
+                        <td><a class="btn btn-primary" th:href="@{/disciplinas/editar/{id}(id=${disciplina.id})}"><i class="fas fa-user-edit ml-2"></i></a></td>
                         <td><a th:href="@{/disciplinas/excluir/{id}(id=${disciplina.id})}" class="btn btn-primary"><i class="fas fa-user-times ml-2"></i></a></td>
                     </tr>
                     </tbody>
