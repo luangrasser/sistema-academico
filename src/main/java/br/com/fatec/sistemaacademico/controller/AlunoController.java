@@ -26,6 +26,13 @@ public class AlunoController {
         return "add-aluno";
     }
 
+    @GetMapping("/editar/{id}")
+    public String mostraFormularioEdicao(@PathVariable("id") Integer id, Model model) {
+        Aluno aluno = alunoService.findById(id);
+        model.addAttribute("aluno", aluno);
+        return "update-aluno";
+    }
+
     @GetMapping("/list-aluno")
     public String mostraListaAlunos(Model model) {
         model.addAttribute("alunos", alunoService.findAll());
@@ -53,24 +60,26 @@ public class AlunoController {
         }
     }
 
-    @PutMapping("/atualizar/{id}")
-    public ResponseEntity<?> atualizar(Aluno aluno) {
+    @PostMapping("/atualizar/{id}")
+    public String atualizar(Aluno aluno, @PathVariable("id") Integer id) {
         try {
-            return ResponseEntity.ok(alunoService.atualizar(aluno));
+            aluno.setId(id);
+            alunoService.salvar(aluno);
+            return "redirect:/alunos/list-aluno";
         } catch (Exception e) {
-            log.error("Falha ao atualizar aluno.", e);
-            return ResponseEntity.badRequest().build();
+            log.error("Falha ao salvar aluno.", e);
+            return "Falha ao salvar aluno.";
         }
     }
 
-    @PutMapping("/excluir/{id}")
-    public ResponseEntity<?> excluir(@PathVariable Integer id) {
+    @GetMapping("/excluir/{id}")
+    public String excluir(@PathVariable Integer id) {
         try {
             alunoService.excluir(id);
-            return ResponseEntity.ok().build();
+            return "redirect:/alunos/list-aluno";
         } catch (Exception e) {
             log.error("Falha ao excluir aluno.", e);
-            return ResponseEntity.badRequest().build();
+            return "Falha ao excluir aluno";
         }
     }
 
