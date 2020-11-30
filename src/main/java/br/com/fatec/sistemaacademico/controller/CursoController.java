@@ -26,13 +26,20 @@ public class CursoController {
         return "add-curso";
     }
 
+    @GetMapping("/editar/{id}")
+    public String mostraFormularioEdicao(@PathVariable("id") Integer id, Model model) {
+        Curso curso = cursoService.findById(id);
+        model.addAttribute("curso", curso);
+        return "update-curso";
+    }
+
     @GetMapping("/list-curso")
     public String mostraListaCursos(Model model) {
         model.addAttribute("cursos", cursoService.findAll());
         return "list-curso";
     }
 
-    @PostMapping(value = "/salvar")
+    @PostMapping("/salvar")
     public String salvar(Curso curso) {
         cursoService.salvar(curso);
         return "redirect:/cursos/list-curso";
@@ -48,24 +55,21 @@ public class CursoController {
         }
     }
 
-    @PutMapping("/atualizar/{id}")
-    public ResponseEntity<?> atualizar(@RequestBody Curso curso) {
-        try {
-            return ResponseEntity.ok(cursoService.atualizar(curso));
-        } catch (Exception e) {
-            log.error("Falha ao atualizar curso.", e);
-            return ResponseEntity.badRequest().build();
-        }
+    @PostMapping("/atualizar/{id}")
+    public String atualizar(Curso curso, @PathVariable("id") Integer id) {
+        curso.setId(id);
+        cursoService.salvar(curso);
+        return "redirect:/cursos/list-curso";
     }
 
-    @PutMapping("/excluir/{id}")
-    public ResponseEntity<?> excluir(@PathVariable Integer id) {
+    @GetMapping("/excluir/{id}")
+    public String excluir(@PathVariable Integer id) {
         try {
             cursoService.excluir(id);
-            return ResponseEntity.ok().build();
+            return "redirect:/cursos/list-curso";
         } catch (Exception e) {
             log.error("Falha ao excluir curso.", e);
-            return ResponseEntity.badRequest().build();
+            return "Falha ao excluir curso";
         }
     }
 

@@ -28,11 +28,6 @@ public class CursoService {
         return cursoRepository.save(curso);
     }
 
-
-    public Curso atualizar(Curso curso) {
-        return cursoRepository.save(curso);
-    }
-
     public void excluir(Integer id) throws Exception {
         Optional<Curso> optCurso = cursoRepository.findById(id);
         optCurso.orElseThrow(() -> new Exception("Curso não encontrado com o id: " + id));
@@ -57,4 +52,7 @@ public class CursoService {
         return cursoRepository.findAll();
     }
 
+    public Curso findById(Integer id) {
+        return cursoRepository.findById(id).orElse(null);
+    }
 }
