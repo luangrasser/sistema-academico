@@ -68,4 +68,7 @@ public class ProfessorService {
         return professorRepository.findAll();
     }
 
+    public Professor findById(Integer id) {
+        return professorRepository.findById(id).orElse(null);
+    }
 }

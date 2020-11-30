@@ -29,7 +29,7 @@
                     <tr th:each="professor : ${professores}">
                         <td th:text="${professor.nome}"></td>
                         <td th:text="${professor.titulacao}"></td>
-                        <td><a class="btn btn-primary" th:href="@{/professores/atualizar/{id}(id=${professor.id})}"><i class="fas fa-user-edit ml-2"></i></a></td>
+                        <td><a class="btn btn-primary" th:href="@{/professores/editar/{id}(id=${professor.id})}"><i class="fas fa-user-edit ml-2"></i></a></td>
                         <td><a class="btn btn-primary" th:href="@{/professores/excluir/{id}(id=${professor.id})}"><i class="fas fa-user-times ml-2"></i></a></td>
                     </tr>
                     </tbody>

@@ -26,6 +26,13 @@ public class TurmaController {
         return "add-turma";
     }
 
+    @GetMapping("/editar/{id}")
+    public String mostraFormularioEdicao(@PathVariable("id") Integer id, Model model) {
+        Turma turma = turmaService.findById(id);
+        model.addAttribute("turma", turma);
+        return "update-turma";
+    }
+
     @GetMapping("/list-turma")
     public String mostraListaAlunos(Model model) {
         model.addAttribute("turmas", turmaService.findAll());
@@ -53,24 +60,26 @@ public class TurmaController {
         }
     }
 
-    @PutMapping("/atualizar/{id}")
-    public ResponseEntity<?> atualizar(Turma turma) {
+    @PostMapping("/atualizar/{id}")
+    public String atualizar(Turma turma, @PathVariable("id") Integer id) {
         try {
-            return ResponseEntity.ok(turmaService.atualizar(turma));
-        } catch (Exception e) {
-            log.error("Falha ao atualizar turma.", e);
-            return ResponseEntity.badRequest().build();
+            turma.setId(id);
+            turmaService.salvar(turma);
+            return "redirect:/turmas/list-turma";
+        } catch(Exception e) {
+            log.error("Falha ao excluir turma.", e);
+            return "Falha ao excluir turma.";
         }
     }
 
-    @PutMapping("/excluir/{id}")
-    public ResponseEntity<?> excluir(@PathVariable Integer id) {
+    @GetMapping("/excluir/{id}")
+    public String excluir(@PathVariable Integer id) {
         try {
             turmaService.excluir(id);
-            return ResponseEntity.ok().build();
+            return "redirect:/turmas/list-turma";
         } catch (Exception e) {
             log.error("Falha ao excluir turma.", e);
-            return ResponseEntity.badRequest().build();
+            return "Falha ao excluir turma";
         }
     }
 

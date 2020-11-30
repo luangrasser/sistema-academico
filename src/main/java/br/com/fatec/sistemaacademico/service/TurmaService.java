@@ -61,4 +61,8 @@ public class TurmaService {
     public List<Turma> findAll() {
         return turmaRepository.findAll();
     }
+
+    public Turma findById(Integer id) {
+        return turmaRepository.findById(id).orElse(null);
+    }
 }

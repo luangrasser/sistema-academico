@@ -28,8 +28,8 @@
                     <tbody>
                     <tr th:each="turma : ${turmas}">
                         <td th:text="${turma.descricao}"></td>
-                        <td th:text="${turma.curso.nome}"></td>
-                        <td><a class="btn btn-primary" th:href="@{/turmas/atualizar/{id}(id=${turma.id})}"><i class="fas fa-user-edit ml-2"></i></a></td>
+                        <td th:text="${turma.nomeCurso}"></td>
+                        <td><a class="btn btn-primary" th:href="@{/turmas/editar/{id}(id=${turma.id})}"><i class="fas fa-user-edit ml-2"></i></a></td>
                         <td><a class="btn btn-primary" th:href="@{/turmas/excluir/{id}(id=${turma.id})}"><i class="fas fa-user-times ml-2"></i></a></td>
                     </tr>
                     </tbody>

@@ -26,6 +26,13 @@ public class ProfessorController {
         return "add-professor";
     }
 
+    @GetMapping("/editar/{id}")
+    public String mostraFormularioEdicao(@PathVariable("id") Integer id, Model model) {
+        Professor professor = professorService.findById(id);
+        model.addAttribute("professor", professor);
+        return "update-professor";
+    }
+    
     @GetMapping("/list-professor")
     public String mostraListaAlunos(Model model) {
         model.addAttribute("professores", professorService.findAll());
@@ -53,24 +60,26 @@ public class ProfessorController {
         }
     }
 
-    @PutMapping("/atualizar/{id}")
-    public ResponseEntity<?> atualizar(Professor professor, @PathVariable Integer id) {
+    @PostMapping("/atualizar/{id}")
+    public String atualizar(Professor professor, @PathVariable("id") Integer id) {
         try {
-            return ResponseEntity.ok(professorService.atualizar(professor));
-        } catch (Exception e) {
-            log.error("Falha ao atualizar professor.", e);
-            return ResponseEntity.badRequest().build();
+            professor.setId(id);
+            professorService.salvar(professor);
+            return "redirect:/professores/list-professor";
+        } catch(Exception e) {
+            log.error("Falha ao excluir professor.", e);
+            return "Falha ao excluir professor.";
         }
     }
 
-    @PutMapping("/excluir/{id}")
-    public ResponseEntity<?> excluir(@PathVariable Integer id) {
+    @GetMapping("/excluir/{id}")
+    public String excluir(@PathVariable Integer id) {
         try {
             professorService.excluir(id);
-            return ResponseEntity.ok().build();
+            return "redirect:/professores/list-professor";
         } catch (Exception e) {
             log.error("Falha ao excluir professor.", e);
-            return ResponseEntity.badRequest().build();
+            return "Falha ao excluir professor";
         }
     }
 }

@@ -1,6 +1,7 @@
 package br.com.fatec.sistemaacademico.model;
 
 import lombok.*;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.util.List;
@@ -22,5 +23,11 @@ public class Turma extends AbstractEntidade {
     @Transient
     private String nomeCurso;
 
+    public String getNomeCurso() {
+        if (nomeCurso == null && curso != null) {
+            return curso.getNome();
+        }
+        return nomeCurso;
+    }
 }
 
